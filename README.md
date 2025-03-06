@@ -1,184 +1,147 @@
-Proyecto: API REST con Spring Boot y JWT
 
-Descripción
+# Proyecto: API REST con Spring Boot y JWT (SEEK)
 
-Este proyecto es una API REST construida con Spring Boot que gestiona tareas y usuarios. Implementa autenticación con JWT (JSON Web Token) para proteger los endpoints.
+A brief description of what this project does and who it's for
 
-Tecnologías utilizadas
 
-Java 17
+## 🚀 Tecnologías Utilizadas
+- **Spring Boot** (Framework principal)
+- **Spring Security** (Autenticación y autorización con JWT)
+- **SQLite** (Base de datos)
+- **Swagger/OpenAPI** (Documentación de la API)
+- **Lombok** (Reducción de código boilerplate)
+- **BCrypt** (Encriptación de contraseñas)
 
-Spring Boot 3
 
-Spring Security
+## ⚙️ Instalación y Configuración
 
-JWT (JSON Web Token)
+**1. Clonar el repositorio**
 
-Spring Data JPA (para acceso a base de datos)
-
-H2 / MySQL (según configuración)
-
-Swagger OpenAPI (para documentación de la API)
-
-Instalación y configuración
-
-Clonar el repositorio:
-
-git clone https://github.com/tu-usuario/tu-repo.git
+```bash
+ git clone https://github.com/alejandrodeveloper25/technical-test-SEEK-Back-End
 cd tu-repo
+```
 
-Configurar la base de datos:
-Modifica el archivo application.properties o application.yml para ajustar la conexión a tu base de datos.
+**2. Configurar la base de datos**
 
-Construir el proyecto:
+Edita el archivo application.properties con la configuración de la base de datos:
 
-mvn clean install
+```bash
+ spring.datasource.url=jdbc:sqlite:task.db
+ spring.datasource.driver-class-name=org.sqlite.JDBC
+ spring.jpa.database-platform=org.hibernate.community.dialect.SQLiteDialect
+ spring.jpa.hibernate.ddl-auto=update
+```
 
-Ejecutar la aplicación:
 
-mvn spring-boot:run
+## 📌 Endpoints Principales
 
-Endpoints principales
+#### 🔐 Autenticación
 
-1. Autenticación y Registro de Usuario
+### Registro usuario
 
-Método
+```http
+POST /auth/register
+```
 
-Endpoint
+Registra un nuevo usuario en el sistema.
 
-Descripción
-
-POST
-
-/auth/register
-
-Registra un nuevo usuario
-
-POST
-
-/auth/login
-
-Inicia sesión y devuelve un token JWT
-
-Ejemplo de Registro (/auth/register)
-
-Request:
-
+**Request Body:**
+```json
 {
-  "username": "usuario123",
-  "password": "password123"
+  "username": "usuario",
+  "password": "contraseña"
 }
-
-Response:
-
+```
+**Response:**
+```json
 {
-  "message": "Usuario registrado con éxito",
-  "user": {
-    "id": 1,
-    "username": "usuario123"
+  "message": "Usuario registrado con éxito"
+}
+```
+### Inicio se sesión
+
+```http
+POST /auth/login
+```
+
+**Request Body:**
+```json
+{
+  "username": "usuario",
+  "password": "contraseña"
+}
+```
+**Response:**
+```json
+{
+  "status": 200,
+  "message": "Autenticación exitosa",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBbGVqYW5kcm9BZG1pbiIsImlhdCI6MTc0MTI4ODE2MCwiZXhwIjoxNzQxMzc0NTYwfQ.pdW6-myME3t7Vb1j7KH7UR-gGxZTSK3IEoZrvl-cFZw"
   }
 }
+```
 
-Ejemplo de Login (/auth/login)
+#### ✅ Gestión de Tareas (/task)
 
-Request:
+Este controlador permite la gestión de tareas en el sistema. Requiere autenticación con un token JWT en el encabezado
+```bash
+Authorization: Bearer <TOKEN>
+```
 
-{
-  "username": "usuario123",
-  "password": "password123"
-}
+### Traer todas las tareas
 
-Response:
+```http
+GET /task
+```
 
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI..."
-}
+### Crear una Tarea
 
-2. Gestor de Tareas (TaskController)
-
-Estos endpoints requieren autenticación con JWT.
-
-Método
-
-Endpoint
-
-Descripción
-
-GET
-
-/task
-
-Obtiene todas las tareas
-
-POST
-
-/task
-
-Crea una nueva tarea
-
-GET
-
-/task/{id}
-
-Obtiene una tarea por ID
-
-PUT
-
-/task/{id}
-
-Actualiza una tarea
-
-DELETE
-
-/task/{id}
-
-Elimina una tarea
-
-Ejemplo de Creación de Tarea (/task)
-
-Request:
-
+```http
+POST /task
+```
+**Request Body:**
+```json
 {
   "title": "Nueva tarea",
-  "description": "Esta es una tarea de prueba"
+  "description": "Descripción de la tarea"
 }
+```
 
-Response:
+### buscar tarea por Id
 
+```http
+GET /task/{id}
+```
+
+### Actualizar Tarea existente
+
+```http
+PUT /task/{id}
+```
+**Request Body:**
+```json
 {
-  "message": "Tarea creada con éxito",
-  "data": {
-    "id": 1,
-    "title": "Nueva tarea",
-    "description": "Esta es una tarea de prueba"
-  }
+  "id": 1,
+  "title": "nuevo titulo",
+  "description": "nueva descripcion"
 }
+```
 
-Seguridad y Validación del Token
+### Eliminar Tarea existente
+```http
+DELETE /task/{id}
+```
 
-El sistema usa JWT para validar cada petición protegida.
 
-Se debe enviar el token en la cabecera Authorization de cada petición:
+## 🔒 Seguridad
+* Los endpoints protegidos requieren autenticación mediante JWT.
 
-Authorization: Bearer <TOKEN>
+* Se utiliza BCrypt para almacenar contraseñas de forma segura.
 
-Si el token es inválido o expira, la API devuelve 403 Forbidden.
+* Se recomienda configurar variables de entorno para manejar claves secretas y credenciales.
+## Authors
 
-Documentación de la API (Swagger)
-
-Una vez corriendo la aplicación, puedes ver la documentación interactiva en:
-
-http://localhost:8080/swagger-ui.html
-
-http://localhost:8080/v3/api-docs
-
-Contribuciones
-
-Si deseas contribuir, puedes hacer un fork del repositorio y enviar un pull request con tus mejoras.
-
-Licencia
-
-Este proyecto está bajo la licencia MIT.
-
-Si necesitas agregar más detalles o modificar algo, dímelo. 🚀
+- [@alejandrodeveloper25](https://github.com/alejandrodeveloper25)
 
