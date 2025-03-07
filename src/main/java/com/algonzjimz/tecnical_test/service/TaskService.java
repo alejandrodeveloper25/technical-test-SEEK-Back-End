@@ -4,6 +4,7 @@ import com.algonzjimz.tecnical_test.model.Task;
 import com.algonzjimz.tecnical_test.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,11 @@ public class TaskService {
     }
 
     public Task create(Task task){
+
+        task.setActive(true);
+        task.setStatus("start");
+        task.setCreationDate(LocalDateTime.now());
+        task.setDueDate(LocalDateTime.now().plusHours(24));
         return taskRepository.save(task);
     }
 

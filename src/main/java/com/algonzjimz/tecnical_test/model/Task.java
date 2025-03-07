@@ -26,13 +26,10 @@ public class Task {
     @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    @NotNull(message = "La fecha de creación es obligatoria")
     private LocalDateTime creationDate;
 
-    @NotNull(message = "La fecha de vencimiento es obligatoria")
     private LocalDateTime dueDate;
 
-    @NotNull(message = "El estado de la tarea es obligatorio")
     private String status;
 
     private boolean active = true;
